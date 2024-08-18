@@ -11,8 +11,9 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useDispatch, useSelector } from "react-redux";
 import { loadAppointments } from "@/redux/appointmentsSlice";
-import { RootState } from "@/redux/store";
+import { RootState, AppDispatch } from "@/redux/store";
 import CustomModal from "./CustomModal";
+
 interface Appointment {
   id: string;
   title: string;
@@ -21,7 +22,7 @@ interface Appointment {
 }
 
 const Calender: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch(); // Type the dispatch correctly
   const { appointments, status, error } = useSelector(
     (state: RootState) => state.appointments
   );
