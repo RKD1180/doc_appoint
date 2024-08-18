@@ -15,18 +15,21 @@ interface AppointmentsState {
   error: string | null;
 }
 
-
 const initialState: AppointmentsState = {
-  appointments: [],
+  appointments: [] as Appointment[],
   status: 'idle',
   error: null,
 };
 
-export const loadAppointments = createAsyncThunk('appointments/loadAppointments', async () => {
-  const getData = localStorage.getItem('appointments');
-  const parseData = getData ? JSON.parse(getData) : { data: [] };
-  return parseData;
-});
+// Fetch appointments from localStorage
+export const loadAppointments = createAsyncThunk(
+  'appointments/loadAppointments',
+  async () => {
+    const getData = localStorage.getItem('appointments');
+    const parseData = getData ? JSON.parse(getData) : { data: [] };
+    return parseData.data; 
+  }
+);
 
 const appointmentsSlice = createSlice({
   name: 'appointments',
@@ -40,13 +43,20 @@ const appointmentsSlice = createSlice({
       state.appointments = action.payload;
       localStorage.setItem('appointments', JSON.stringify({ data: state.appointments }));
     },
+    updateAppointment(state, action: PayloadAction<Appointment>) {
+      const index = state.appointments.findIndex(appointment => appointment.id === action.payload.id);
+      if (index !== -1) {
+        state.appointments[index] = action.payload;
+        localStorage.setItem('appointments', JSON.stringify({ data: state.appointments }));
+      }
+    }
   },
   extraReducers: (builder) => {
     builder
       .addCase(loadAppointments.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(loadAppointments.fulfilled, (state, action) => {
+      .addCase(loadAppointments.fulfilled, (state, action: PayloadAction<Appointment[]>) => {
         state.status = 'succeeded';
         state.appointments = action.payload;
       })
@@ -57,5 +67,8 @@ const appointmentsSlice = createSlice({
   },
 });
 
-export const { addAppointment, setAppointments } = appointmentsSlice.actions;
+// Export actions
+export const { addAppointment, setAppointments, updateAppointment } = appointmentsSlice.actions;
+
+// Export reducer
 export default appointmentsSlice.reducer;

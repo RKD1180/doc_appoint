@@ -5,13 +5,8 @@ import {
   Event as BigCalendarEvent,
 } from "react-big-calendar";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
-import format from "date-fns/format";
-import parse from "date-fns/parse";
-import startOfWeek from "date-fns/startOfWeek";
-import getDay from "date-fns/getDay";
+import { format, parse, startOfWeek, getDay, addHours } from "date-fns";
 import enUS from "date-fns/locale/en-US";
-import addHours from "date-fns/addHours";
-import startOfHour from "date-fns/startOfHour";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -97,11 +92,6 @@ const Calender: React.FC = () => {
 const locales = {
   "en-US": enUS,
 };
-
-const endOfHour = (date: Date): Date => addHours(startOfHour(date), 1);
-const now = new Date();
-const start = endOfHour(now);
-const end = addHours(start, 2);
 
 const localizer = dateFnsLocalizer({
   format,
